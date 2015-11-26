@@ -1,0 +1,29 @@
+#!/bin/bash
+
+#
+##### Global variables.
+#
+
+# Meteor App Path 셋팅
+APP="$(pwd)/app"
+
+#
+# Help and usage info.
+#
+
+# 환경변수 셋팅
+OPTION_SETTINGS="--settings $(pwd)/config/settings.json"
+
+# start meteor app
+echo "
+   #######################################
+   #                                     #
+   #        Meteor App is Starting!      #
+   #                                     #
+   #######################################
+   "
+
+cd $APP
+
+meteor $OPTION_SETTINGS
+
