@@ -1,5 +1,5 @@
 # Meteor&React&ReactRouter Tutorial
-Meteor &amp; React &amp; ReactRouter를 활용한 helloworld부터 앱만들기까지
+> 목표 : Meteor &amp; React &amp; ReactRouter를 활용한 helloworld부터 앱만들기까지
 
 ### 초기 환경셋팅
 
