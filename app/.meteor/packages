@@ -26,5 +26,6 @@ cosmos:browserify
 
 
 npm-container
-denebjs:react-essence
 denebjs:flux
+less
+denebjs:essence

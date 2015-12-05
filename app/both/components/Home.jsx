@@ -1,5 +1,7 @@
 const { History } = ReactRouter;
 
+const { AppBar, Menu, MenuItem, Text, Icon, Block, Btn, BtnItem } = Essence;
+
 Home = React.createClass({
   mixins: [History],
 
@@ -12,8 +14,7 @@ Home = React.createClass({
   render() {
     return (
       <div>
-        <h1>Home</h1>
-        <div onClick={this.router.bind(null, '/blog')}>Blog</div>
+        <h1 className="e-text-amber-300">Home</h1>
       </div>
     )
   }
