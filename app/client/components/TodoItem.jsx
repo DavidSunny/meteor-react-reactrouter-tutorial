@@ -41,13 +41,20 @@ TodoItem = React.createClass({
 
   onCheckboxChange() {
     // Set to the opposite of the current state
-    const checked = ! this.props.task.checked;
+    const payload = {
+      taskId: this.props.task._id,
+      checked: ! this.props.task.checked
+    };
 
-    Meteor.call("/todos/setChecked", this.props.task._id, checked);
+    AppStore.call('CHANGE_CHECKBOX', payload);
   },
 
   removeThisItem() {
-    Meteor.call("/todos/delete", this.props.task._id);
+    const payload = {
+      taskId: this.props.task._id
+    };
+
+    AppStore.call("DELETE_TODOS", payload);
   },
 
   render() {

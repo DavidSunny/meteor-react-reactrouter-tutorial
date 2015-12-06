@@ -15,9 +15,21 @@ TodoListPage = React.createClass({
     };
   },
 
+  componentWillUnmount() {
+    AppStore.call('RESET_SUBMIT_NEW_TASK');
+    AppStore.call('RESET_CHANGE_CHECKBOX');
+    AppStore.call('RESET_DELETE_TODOS');
+
+    // if you're a route component (this.props), otherwise (this.context)
+    const payload = {
+      pathname: this.props.location.pathname
+    };
+    AppStore.call('RIGHT_BEFORE_PATH', payload);
+  },
+
+
   render() {
     const list = this.data.list;
-    const tasks = this.data.tasks;
 
     if (! list) {
       return <AppNotFound />;
@@ -29,7 +41,7 @@ TodoListPage = React.createClass({
           list={list}
           showLoadingIndicator={this.data.tasksLoading} />
 
-        <TodoListItems tasks={this.data.tasks} />
+        <TodoListItems tasks={this.data.tasks} CHANGE_CHECKBOX={this.data.CHANGE_CHECKBOX} />
       </div>
     );
   }

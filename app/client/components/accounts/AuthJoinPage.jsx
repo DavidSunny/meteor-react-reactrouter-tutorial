@@ -101,5 +101,13 @@ AuthJoinPage = React.createClass({
         </div>
       </div>
     );
-  }
+  },
+
+  componentWillUnmount() {
+    // if you're a route component (this.props), otherwise (this.context)
+    const payload = {
+      pathname: this.props.location.pathname
+    };
+    AppStore.call('RIGHT_BEFORE_PATH', payload);
+  },
 });

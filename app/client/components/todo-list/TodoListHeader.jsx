@@ -1,5 +1,5 @@
 TodoListHeader = React.createClass({
-  mixins: [ReactRouter.Navigation],
+  mixins: [ReactRouter.History],
 
   propTypes: {
     list: React.PropTypes.object.isRequired,
@@ -46,6 +46,7 @@ TodoListHeader = React.createClass({
     };
 
     const message = `Are you sure you want to delete the list ${this.props.list.name}?`;
+
     if (confirm(message)) {
       Meteor.call("/lists/delete", this.props.list._id, (err, res) => {
         if (err) {
@@ -53,8 +54,8 @@ TodoListHeader = React.createClass({
           return;
         }
 
-        // Now that this list doesn't exist, redirect to the first list
-        this.transitionTo("root");
+        // 해당 리스트가 삭제되어, 첫번째 리스트로 리다이렉트
+        this.history.pushState(null, "/");
       })
     }
   },
@@ -72,25 +73,25 @@ TodoListHeader = React.createClass({
     });
   },
 
-  onSubmitNewTask(event) {
-    event.preventDefault();
+  onSubmitNewTask(e) {
+    e.preventDefault();
 
     const listId = this.props.list._id;
-    const input = ReactDOM.findDOMNode(this.refs.newTaskInput);
-    const taskText = input.value;
+    const inputRef = ReactDOM.findDOMNode(this.refs.newTaskInput);
+    const taskText = inputRef.value;
+
+    // Don't do anything if the input is empty
     if (! taskText) {
-      // Don't do anything if the input is empty
       return;
     }
 
-    Meteor.call("/lists/addTask", this.props.list._id, taskText, (err, res) => {
-      if (err) {
-        alert("Failed to add new task.");
-        return;
-      }
+    const payload = {
+      listId,
+      taskText,
+      inputRef
+    };
 
-      input.value = "";
-    });
+    AppStore.call('SUBMIT_NEW_TASK', payload);
   },
 
   render() {

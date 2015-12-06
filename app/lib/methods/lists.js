@@ -59,7 +59,7 @@ Meteor.methods({
     // Delete the list itself
     Lists.remove(list._id);
   },
-  '/lists/addTask': function (listId, newTaskText) {
+  'SUBMIT_NEW_TASK': function (listId, newTaskText) {
     Todos.insert({
       listId: listId,
       text: newTaskText,

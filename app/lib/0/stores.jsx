@@ -1,0 +1,1 @@
+AppStore = new Store('AppStore');

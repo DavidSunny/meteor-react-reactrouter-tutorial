@@ -1,11 +1,8 @@
-const Link = ReactRouter.Link;
-
-
 // true if we should show an error dialog when there is a connection error.
 // Exists so that we don't show a connection error dialog when the app is just
 // starting and hasn't had a chance to connect yet.
-const ShowConnectionIssues = new ReactiveVar(false);
 
+const ShowConnectionIssues = new ReactiveVar(false);
 const CONNECTION_ISSUE_TIMEOUT = 5000;
 
 
@@ -30,13 +27,20 @@ AppBody = React.createClass({
   },
 
   childContextTypes: {
-    toggleMenuOpen: React.PropTypes.func.isRequired
+    toggleMenuOpen: React.PropTypes.func.isRequired,
+    AppStore: React.PropTypes.func.isRequired
   },
+
 
   getChildContext() {
     return {
-      toggleMenuOpen: this.toggleMenuOpen
+      toggleMenuOpen: this.toggleMenuOpen,
+      AppStore: this.AppStore
     }
+  },
+
+  AppStore() {
+    return this.data.AppStore
   },
 
   getMeteorData() {
@@ -62,7 +66,13 @@ AppBody = React.createClass({
       subsReady: subsReady,
       lists: Lists.find({}, { sort: {createdAt: -1} }).fetch(),
       currentUser: Meteor.user(),
-      disconnected: ShowConnectionIssues.get() && (! Meteor.status().connected)
+      disconnected: ShowConnectionIssues.get() && (! Meteor.status().connected),
+      AppStore: {
+        SUBMIT_NEW_TASK: AppStore.get('SUBMIT_NEW_TASK'),
+        CHANGE_CHECKBOX: AppStore.get('CHANGE_CHECKBOX'),
+        DELETE_TODOS: AppStore.get('DELETE_TODOS'),
+        RIGHT_BEFORE_PATH: AppStore.get('RIGHT_BEFORE_PATH')
+      },
     };
   },
 
@@ -90,6 +100,9 @@ AppBody = React.createClass({
   },
 
   render() {
+    var str = JSON.stringify(this.data.AppStore, undefined, 4);
+    console.log(str);
+
     let appBodyContainerClass = "";
 
     if (Meteor.isCordova) {
