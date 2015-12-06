@@ -1,42 +1,35 @@
-// true if we should show an error dialog when there is a connection error.
-// Exists so that we don't show a connection error dialog when the app is just
-// starting and hasn't had a chance to connect yet.
+Meteor.startup(function () {
+  // initializing AppStore
+  AppStore.call('AFTER_APP_START', { duration: 2000 });
+  AppStore.call('TOGGLE_MENU_OPEN', { isMenuOpen: false });
+  AppStore.call('APP_CONNECTION_STATUS');
+  AppStore.call('STARTED_LIST_TITLE_EDITING_MODE', { editingMode: false });
+});
 
-const ShowConnectionIssues = new ReactiveVar(false);
-const CONNECTION_ISSUE_TIMEOUT = 5000;
-
-
-// Only show the connection error box if it has been 5 seconds since
-// the app started
-setTimeout(function () {
-  // Show the connection error box
-  ShowConnectionIssues.set(true);
-}, CONNECTION_ISSUE_TIMEOUT);
-
-
-// This component handles making the subscriptons to globally necessary data,
-// handling router transitions based on that data, and rendering the basid app
-// layout
+// 이 컴포넌트는
+// 1) 전역으로 필요한 데이터에 대한 구독,
+// 2) 구독한 데이터 기반으로한 라우터 트랜지션,
+// 3) 앱 레이아웃을 렌더링하는 것을 핸들링
 AppBody = React.createClass({
   mixins: [ReactMeteorData],
-
-  getInitialState() {
-    return {
-      menuOpen: false
-    };
-  },
 
   childContextTypes: {
     toggleMenuOpen: React.PropTypes.func.isRequired,
     AppStore: React.PropTypes.func.isRequired
   },
 
-
   getChildContext() {
     return {
       toggleMenuOpen: this.toggleMenuOpen,
       AppStore: this.AppStore
     }
+  },
+  toggleMenuOpen() {
+    const payload = {
+      isMenuOpen: ! this.data.AppStore.TOGGLE_MENU_OPEN.result
+    };
+
+    AppStore.call('TOGGLE_MENU_OPEN', payload);
   },
 
   AppStore() {
@@ -63,75 +56,76 @@ AppBody = React.createClass({
     }
 
     return {
-      subsReady: subsReady,
+      subsReady,
       lists: Lists.find({}, { sort: {createdAt: -1} }).fetch(),
       currentUser: Meteor.user(),
-      disconnected: ShowConnectionIssues.get() && (! Meteor.status().connected),
+
       AppStore: {
         SUBMIT_NEW_TASK: AppStore.get('SUBMIT_NEW_TASK'),
         CHANGE_CHECKBOX: AppStore.get('CHANGE_CHECKBOX'),
         DELETE_TODOS: AppStore.get('DELETE_TODOS'),
-        RIGHT_BEFORE_PATH: AppStore.get('RIGHT_BEFORE_PATH')
-      },
+        RIGHT_BEFORE_PATH: AppStore.get('RIGHT_BEFORE_PATH'),
+        AFTER_APP_START: AppStore.get('AFTER_APP_START'),
+        APP_CONNECTION_STATUS: AppStore.get('APP_CONNECTION_STATUS'),
+        TOGGLE_MENU_OPEN: AppStore.get('TOGGLE_MENU_OPEN'),
+        ADD_LIST: AppStore.get('ADD_LIST'),
+        CHANGED_LIST_TITLE: AppStore.get('CHANGED_LIST_TITLE'),
+        STARTED_LIST_TITLE_EDITING_MODE: AppStore.get('STARTED_LIST_TITLE_EDITING_MODE')
+      }
     };
   },
 
-  toggleMenuOpen() {
-    this.setState({
-      menuOpen: ! this.state.menuOpen
-    });
-  },
-
   addList() {
-    Meteor.call("/lists/add", (err, res) => {
-      if (err) {
-        // Not going to be too fancy about error handling in this example app
-        alert("Error creating list.");
-        return;
-      }
-
-      // Go to the page for the new list
-      this.props.history.pushState(null, `/lists/${res}`);
-    });
+    const payload = {
+      history: this.props.history
+    };
+    AppStore.call('ADD_LIST', payload);
   },
 
   getListId() {
     return this.props.params.listId;
   },
 
-  render() {
-    var str = JSON.stringify(this.data.AppStore, undefined, 4);
-    console.log(str);
+  renderConnectionIssueDialog() {
+    const disconnected = this.data.AppStore.AFTER_APP_START.result
+      && ! this.data.AppStore.APP_CONNECTION_STATUS.result;
 
+    if (disconnected) return <ConnectionIssueDialog />;
+    return null;
+  },
+
+  renderAppBodyContainerClass() {
     let appBodyContainerClass = "";
 
     if (Meteor.isCordova) {
       appBodyContainerClass += " cordova";
     }
 
-    if (this.state.menuOpen) {
-      appBodyContainerClass += " menu-open";
+    if (this.data.AppStore.TOGGLE_MENU_OPEN.result) {
+      return appBodyContainerClass += " menu-open";
     }
+  },
 
+  renderChildren() {
+    if (this.data.subsReady) {
+      return this.props.children
+    }
+    return <AppLoading />
+  },
+
+  render() {
+    console.log(JSON.stringify(this.data.AppStore, undefined, 4));
+    
     return (
-      <div id="container" className={ appBodyContainerClass }>
-
-        <LeftPanel
-          currentUser={this.data.currentUser}
-          onAddList={this.addList}
-          lists={this.data.lists}
-          activeListId={this.getListId()} />
-
-        { this.data.disconnected ? <ConnectionIssueDialog /> : "" }
-
-        <div className="content-overlay" onClick={ this.toggleMenuOpen }></div>
-
-        <div id="content-container">
-          { this.data.subsReady ?
-            this.props.children :
-            <AppLoading /> }
-        </div>
-
+      <div id="container" className={ this.renderAppBodyContainerClass() }>
+        {this.renderConnectionIssueDialog()}
+        <LeftPanel currentUser={ this.data.currentUser }
+                   lists={ this.data.lists }
+                   onAddList={ this.addList }
+                   activeListId={ this.getListId() } />
+        <div onClick={ this.toggleMenuOpen }
+             className="content-overlay"></div>
+        <div id="content-container"> { this.renderChildren() } </div>
       </div>
     );
   }

@@ -1,6 +1,6 @@
 // Calculate a default name for a list in the form of 'List A'
 Lists.defaultName = function() {
-  var nextLetter = 'A', nextName = 'List ' + nextLetter;
+  var nextLetter = 'A', nextName = '카테고리 ' + nextLetter;
   while (Lists.findOne({name: nextName})) {
     // not going to be too smart here, can go past Z
     nextLetter = String.fromCharCode(nextLetter.charCodeAt(0) + 1);
@@ -11,7 +11,7 @@ Lists.defaultName = function() {
 };
 
 Meteor.methods({
-  '/lists/add': function () {
+  'ADD_LIST': function () {
     var list = {
       name: Lists.defaultName(),
       incompleteCount: 0,
@@ -22,11 +22,13 @@ Meteor.methods({
 
     return listId;
   },
+
   '/lists/updateName': function (listId, newName) {
     Lists.update(listId, {
       $set: { name: newName }
     });
   },
+
   '/lists/togglePrivate': function (listId) {
     var list = Lists.findOne(listId);
 
@@ -59,6 +61,7 @@ Meteor.methods({
     // Delete the list itself
     Lists.remove(list._id);
   },
+
   'SUBMIT_NEW_TASK': function (listId, newTaskText) {
     Todos.insert({
       listId: listId,

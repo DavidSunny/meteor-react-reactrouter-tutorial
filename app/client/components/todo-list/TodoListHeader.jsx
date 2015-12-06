@@ -6,37 +6,37 @@ TodoListHeader = React.createClass({
     tasksLoading: React.PropTypes.bool
   },
 
-  getInitialState() {
-    return {
-      editingTitle: false,
+  contextTypes: {
+    AppStore: React.PropTypes.func.isRequired
+  },
+
+  startedListTileEditingMode() {
+    const payload = {
+      editingMode: true,
+      nameInputValue: this.props.list.name,
+      inputRef: this.refs.nameInput
     };
+
+    AppStore.call('STARTED_LIST_TITLE_EDITING_MODE', payload);
   },
 
-  startEditingTitle() {
-    this.setState({
-      editingTitle: true,
-      nameInputValue: this.props.list.name
-    }, () => {
-      ReactDOM.findDOMNode(this.refs.nameInput).focus();
-    });
+  stopEditingTitle(e) {
+    e.preventDefault();
+
+    const payload = {
+      listId: this.props.list._id,
+      nameInputValue: this.context.AppStore().CHANGED_LIST_TITLE.nameInputValue
+    };
+
+    AppStore.call('UPDATE_LIST_TITLE', payload);
   },
 
-  stopEditingTitle(event) {
-    event.preventDefault();
+  changedListTitle(e) {
+    const payload = {
+      nameInputValue: e.target.value
+    };
 
-    this.setState({
-      editingTitle: false,
-      nameInputValue: undefined
-    });
-
-    Meteor.call("/lists/updateName",
-      this.props.list._id, this.state.nameInputValue);
-  },
-
-  titleChanged(event) {
-    this.setState({
-      nameInputValue: event.target.value
-    });
+    AppStore.call('CHANGED_LIST_TITLE', payload);
   },
 
   deleteList() {
@@ -106,14 +106,14 @@ TodoListHeader = React.createClass({
     );
 
     let nav;
-    if (this.state.editingTitle) {
+    if (this.context.AppStore().CHANGED_LIST_TITLE.editingMode) {
       nav = (
         <nav>
           <form className="list-edit-form" onSubmit={ this.stopEditingTitle }>
             <input type="text" name="name"
               ref="nameInput"
               defaultValue={ list.name }
-              onChange={ this.titleChanged }
+              onChange={ this.changedListTitle }
               onBlur={ this.stopEditingTitle } />
             <div className="nav-group right">
               <a className="nav-item">
@@ -128,7 +128,7 @@ TodoListHeader = React.createClass({
       nav = (
         <nav>
           <MenuOpenToggle />
-          <h1 className="title-page" onClick={ this.startEditingTitle }>
+          <h1 className="title-page" onClick={ this.startedListTileEditingMode }>
             <span className="title-wrapper">{ list.name }</span>
             <span className="count-list">{ list.incompleteCount }</span>
           </h1>
