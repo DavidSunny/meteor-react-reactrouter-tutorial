@@ -51,9 +51,9 @@ AuthSignInPage = React.createClass({
 
       <div className="content-scrollable">
         <div className="wrapper-auth">
-          <h1 className="title-auth">Sign In.</h1>
+          <h1 className="title-auth">로그인</h1>
           <p className="subtitle-auth" >
-            Signing in allows you to view private lists
+            로그인을 하면 시크릿 리스트를 볼 수 있습니다.
           </p>
 
           <form onSubmit={ this.onSubmit }>
@@ -73,12 +73,12 @@ AuthSignInPage = React.createClass({
               iconClass="icon-lock" />
 
             <button type="submit" className="btn-primary">
-              Sign in
+              로그인
             </button>
           </form>
         </div>
         <Link to="/join" className="link-auth-alt">
-          Need an account? Join Now.
+          계정이 필요합니까? 지금 회원가입하세요.
         </Link>
       </div>
     </div>

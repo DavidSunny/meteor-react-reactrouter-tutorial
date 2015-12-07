@@ -172,9 +172,9 @@ AppStore.methods({
   },
 
   STARTED_LIST_TITLE_EDITING_MODE: function(payload={}) {
-    const { editingMode, nameInputValue, inputRef } = payload;
+    const { editingMode, nameInputValue } = payload;
     
-    console.log('payload: ', payload);
+    console.log('STARTED_LIST_TITLE_EDITING_MODE payload: ', payload);
     
     this.setState({
       STARTED_LIST_TITLE_EDITING_MODE: {
@@ -182,8 +182,6 @@ AppStore.methods({
         nameInputValue
       }
     });
-
-    if (inputRef) inputRef.focus();
   },
 
   UPDATE_LIST_TITLE: function(payload={}) {
@@ -191,18 +189,18 @@ AppStore.methods({
 
     Meteor.call("/lists/updateName", listId, nameInputValue, (err, res) => {
       if (err) {
-        this.setState({
-          STARTED_LIST_TITLE_EDITING_MODE: {
-            editingMode: true,
-            nameInputValue: nameInputValue
-          }
-        });
         alert('리스트 제목 변경 실패');
         return;
       }
       this.setState({
         STARTED_LIST_TITLE_EDITING_MODE: {
           editingMode: false,
+          nameInputValue: nameInputValue
+        }
+      });
+
+      this.setState({
+        CHANGED_LIST_TITLE: {
           nameInputValue: undefined
         }
       });

@@ -10,17 +10,26 @@ TodoListHeader = React.createClass({
     AppStore: React.PropTypes.func.isRequired
   },
 
+  componentDidUpdate() {
+    if (this.context.AppStore().STARTED_LIST_TITLE_EDITING_MODE.editingMode) {
+      this.refs.nameInput.focus();
+    }
+  },
+
   startedListTileEditingMode() {
+    console.log('1: ', 1);
+    
     const payload = {
       editingMode: true,
       nameInputValue: this.props.list.name,
-      inputRef: this.refs.nameInput
     };
 
     AppStore.call('STARTED_LIST_TITLE_EDITING_MODE', payload);
   },
 
   stopEditingTitle(e) {
+    console.log('2: ', 2);
+    
     e.preventDefault();
 
     const payload = {
@@ -35,7 +44,9 @@ TodoListHeader = React.createClass({
     const payload = {
       nameInputValue: e.target.value
     };
-
+    
+    console.log('changedListTitle payload: ', payload);
+    
     AppStore.call('CHANGED_LIST_TITLE', payload);
   },
 
@@ -54,6 +65,8 @@ TodoListHeader = React.createClass({
           return;
         }
 
+        console.log('this: ', this);
+        
         // 해당 리스트가 삭제되어, 첫번째 리스트로 리다이렉트
         this.history.pushState(null, "/");
       })
@@ -95,6 +108,8 @@ TodoListHeader = React.createClass({
   },
 
   render() {
+    console.log('this.context: ', this.context.AppStore());
+    
     const list = this.props.list;
 
     const newTaskForm = (
@@ -106,7 +121,7 @@ TodoListHeader = React.createClass({
     );
 
     let nav;
-    if (this.context.AppStore().CHANGED_LIST_TITLE.editingMode) {
+    if (this.context.AppStore().STARTED_LIST_TITLE_EDITING_MODE.editingMode) {
       nav = (
         <nav>
           <form className="list-edit-form" onSubmit={ this.stopEditingTitle }>

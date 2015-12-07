@@ -70,7 +70,8 @@ AppBody = React.createClass({
         TOGGLE_MENU_OPEN: AppStore.get('TOGGLE_MENU_OPEN'),
         ADD_LIST: AppStore.get('ADD_LIST'),
         CHANGED_LIST_TITLE: AppStore.get('CHANGED_LIST_TITLE'),
-        STARTED_LIST_TITLE_EDITING_MODE: AppStore.get('STARTED_LIST_TITLE_EDITING_MODE')
+        STARTED_LIST_TITLE_EDITING_MODE: AppStore.get('STARTED_LIST_TITLE_EDITING_MODE'),
+        UPDATE_LIST_TITLE: AppStore.get('UPDATE_LIST_TITLE')
       }
     };
   },

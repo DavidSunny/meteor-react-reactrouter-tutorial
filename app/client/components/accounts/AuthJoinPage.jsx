@@ -60,9 +60,9 @@ AuthJoinPage = React.createClass({
 
         <div className="content-scrollable">
           <div className="wrapper-auth">
-            <h1 className="title-auth">Join.</h1>
+            <h1 className="title-auth">회원가입</h1>
             <p className="subtitle-auth">
-              Joining allows you to make private lists
+              회원가입을 하면 시크릿 리스트를 볼 수 있습니다.
             </p>
 
             <form onSubmit={ this.onSubmit }>
@@ -90,13 +90,13 @@ AuthJoinPage = React.createClass({
                 iconClass="icon-lock" />
 
               <button type="submit" className="btn-primary">
-                Join Now
+                지금 가입하세요.
               </button>
             </form>
           </div>
 
           <Link to="/signin" className="link-auth-alt">
-            Have an account? Sign in.
+            이미 계정을 가지고 있습니까? 로그인.
           </Link>
         </div>
       </div>

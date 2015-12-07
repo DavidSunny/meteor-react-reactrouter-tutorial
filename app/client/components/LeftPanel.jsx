@@ -12,7 +12,7 @@ LeftPanel = React.createClass({
         <div className="list-todos">
           <a className="link-list-new" onClick={ this.props.onAddList }>
             <span className="icon-plus"></span>
-            New List
+            새 카테고리
           </a>
         
           <TodoLists
