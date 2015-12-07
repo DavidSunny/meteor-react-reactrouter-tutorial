@@ -6,9 +6,23 @@ TodoListHeader = React.createClass({
     tasksLoading: React.PropTypes.bool
   },
 
-  getInitialState() {
-    return {
-      editingTitle: false,
+  contextTypes: {
+    AppStore: React.PropTypes.func.isRequired
+  },
+
+  componentDidUpdate() {
+    if (this.context.AppStore().STARTED_LIST_TITLE_EDITING_MODE.editingMode) {
+      this.refs.nameInput.focus();
+    }
+  },
+
+  startedListTileEditingMode() {
+    console.log('1: ', 1);
+    
+    const payload = {
+      editingMode: true,
+      nameInputValue: this.props.list.name,
+>>>>>>> Stashed changes
     };
   },
 
@@ -21,8 +35,15 @@ TodoListHeader = React.createClass({
     });
   },
 
+<<<<<<< Updated upstream
   stopEditingTitle(event) {
     event.preventDefault();
+=======
+  stopEditingTitle(e) {
+    console.log('2: ', 2);
+    
+    e.preventDefault();
+>>>>>>> Stashed changes
 
     this.setState({
       editingTitle: false,
@@ -33,10 +54,21 @@ TodoListHeader = React.createClass({
       this.props.list._id, this.state.nameInputValue);
   },
 
+<<<<<<< Updated upstream
   titleChanged(event) {
     this.setState({
       nameInputValue: event.target.value
     });
+=======
+  changedListTitle(e) {
+    const payload = {
+      nameInputValue: e.target.value
+    };
+    
+    console.log('changedListTitle payload: ', payload);
+    
+    AppStore.call('CHANGED_LIST_TITLE', payload);
+>>>>>>> Stashed changes
   },
 
   deleteList() {
@@ -54,6 +86,8 @@ TodoListHeader = React.createClass({
           return;
         }
 
+        console.log('this: ', this);
+        
         // 해당 리스트가 삭제되어, 첫번째 리스트로 리다이렉트
         this.history.pushState(null, "/");
       })
@@ -95,6 +129,8 @@ TodoListHeader = React.createClass({
   },
 
   render() {
+    console.log('this.context: ', this.context.AppStore());
+    
     const list = this.props.list;
 
     const newTaskForm = (
@@ -106,7 +142,11 @@ TodoListHeader = React.createClass({
     );
 
     let nav;
+<<<<<<< Updated upstream
     if (this.state.editingTitle) {
+=======
+    if (this.context.AppStore().STARTED_LIST_TITLE_EDITING_MODE.editingMode) {
+>>>>>>> Stashed changes
       nav = (
         <nav>
           <form className="list-edit-form" onSubmit={ this.stopEditingTitle }>

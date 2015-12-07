@@ -71,8 +71,15 @@ AppBody = React.createClass({
         SUBMIT_NEW_TASK: AppStore.get('SUBMIT_NEW_TASK'),
         CHANGE_CHECKBOX: AppStore.get('CHANGE_CHECKBOX'),
         DELETE_TODOS: AppStore.get('DELETE_TODOS'),
-        RIGHT_BEFORE_PATH: AppStore.get('RIGHT_BEFORE_PATH')
-      },
+        RIGHT_BEFORE_PATH: AppStore.get('RIGHT_BEFORE_PATH'),
+        AFTER_APP_START: AppStore.get('AFTER_APP_START'),
+        APP_CONNECTION_STATUS: AppStore.get('APP_CONNECTION_STATUS'),
+        TOGGLE_MENU_OPEN: AppStore.get('TOGGLE_MENU_OPEN'),
+        ADD_LIST: AppStore.get('ADD_LIST'),
+        CHANGED_LIST_TITLE: AppStore.get('CHANGED_LIST_TITLE'),
+        STARTED_LIST_TITLE_EDITING_MODE: AppStore.get('STARTED_LIST_TITLE_EDITING_MODE'),
+        UPDATE_LIST_TITLE: AppStore.get('UPDATE_LIST_TITLE')
+      }
     };
   },
 

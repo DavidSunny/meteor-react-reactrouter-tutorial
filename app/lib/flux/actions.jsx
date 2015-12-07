@@ -82,6 +82,79 @@ AppStore.methods({
     this.setState({
       RIGHT_BEFORE_PATH: null
     });
+  },
+
+  ADD_LIST: function(payload={}) {
+    const { history } = payload;
+
+    Meteor.call("ADD_LIST", (err, res) => {
+      if (err) {
+        this.setState({
+          ADD_LIST: {
+            result: false
+          }
+        });
+        // 편의상 에러는 alert으로..
+        alert("Error creating list.");
+        return;
+      }
+
+      // 새로만든 리스트 페이지로 이동
+      history.pushState(null, `/lists/${res}`);
+
+      this.setState({
+        ADD_LIST: {
+          result: true,
+          listId: res
+        }
+      });
+    });
+  },
+
+  CHANGED_LIST_TITLE: function(payload={}) {
+    const { nameInputValue } = payload;
+
+    this.setState({
+      CHANGED_LIST_TITLE: {
+        nameInputValue
+      }
+    });
+  },
+
+  STARTED_LIST_TITLE_EDITING_MODE: function(payload={}) {
+    const { editingMode, nameInputValue } = payload;
+    
+    console.log('STARTED_LIST_TITLE_EDITING_MODE payload: ', payload);
+    
+    this.setState({
+      STARTED_LIST_TITLE_EDITING_MODE: {
+        editingMode,
+        nameInputValue
+      }
+    });
+  },
+
+  UPDATE_LIST_TITLE: function(payload={}) {
+    const { listId, nameInputValue } = payload;
+
+    Meteor.call("/lists/updateName", listId, nameInputValue, (err, res) => {
+      if (err) {
+        alert('리스트 제목 변경 실패');
+        return;
+      }
+      this.setState({
+        STARTED_LIST_TITLE_EDITING_MODE: {
+          editingMode: false,
+          nameInputValue: nameInputValue
+        }
+      });
+
+      this.setState({
+        CHANGED_LIST_TITLE: {
+          nameInputValue: undefined
+        }
+      });
+    });
   }
 });
 

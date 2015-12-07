@@ -40,14 +40,14 @@ UserSidebarSection = React.createClass({
             { emailUsername }
           </a>
           { this.state.menuOpen ?
-            <a className="btn-secondary" onClick={ this.logout } >Logout</a> : ""}
+            <a className="btn-secondary" onClick={ this.logout } >로그아웃</a> : ""}
         </div>
       );
     } else {
       contents = (
         <div className="btns-group">
-          <Link to="/signin" className="btn-secondary">Sign in</Link>
-          <Link to="/join" className="btn-secondary">Join</Link>
+          <Link to="/signin" className="btn-secondary">로그인</Link>
+          <Link to="/join" className="btn-secondary">회원가입</Link>
         </div>
       );
     }
